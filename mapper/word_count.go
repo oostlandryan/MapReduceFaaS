@@ -6,8 +6,8 @@ import (
 )
 
 type mrTuple struct {
-	wordFile string
-	count    int
+	WordFile string `json:"worldfile"`
+	Count    int    `json:"count"`
 }
 
 func WordCount(fileName string, text string) []mrTuple {
@@ -15,11 +15,11 @@ func WordCount(fileName string, text string) []mrTuple {
 	words := strings.Fields(text)
 	for _, w := range words {
 		w = strings.TrimRightFunc(w, func(r rune) bool {
-			return !unicode.IsLetter(r)
+			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
 		})
 		tup := mrTuple{
-			wordFile: w + "_" + fileName,
-			count:    1,
+			WordFile: w + "_" + fileName,
+			Count:    1,
 		}
 		result = append(result, tup)
 	}

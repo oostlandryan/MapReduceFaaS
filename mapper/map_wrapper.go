@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	firebase "firebase.google.com/go"
 )
@@ -56,19 +54,25 @@ func MapHttp(w http.ResponseWriter, r *http.Request) {
 		dsnap, err := d.Get(ctx)
 		if err != nil {
 			log.Fatalln(err)
+			fmt.Fprint(w, "error1 ")
 		}
 		s := fmt.Sprintf("%v", dsnap.Data()["text"])
 		words := WordCount(f, s)
 		result = append(result, words...)
 	}
 
-	// Write results to screen
-	var strSlice []string
-	for _, t := range result {
-		s := "(" + t.wordFile + ", " + strconv.Itoa(t.count) + ")"
-		strSlice = append(strSlice, s)
-	}
-	resultStr := strings.Join(strSlice, ", ")
-	fmt.Fprint(w, "["+resultStr+"]")
+	// // Write results to screen
+	// var strSlice []string
+	// for _, t := range result {
+	// 	s := "(" + t.WordFile + ", " + strconv.Itoa(t.Count) + ")"
+	// 	strSlice = append(strSlice, s)
+	// }
+	// resultStr := strings.Join(strSlice, ", ")
+	// fmt.Fprint(w, "["+resultStr+"")
 
+	w.Header().Set("Content-Type", "application/json")
+	resultStruct := struct {
+		MapResult []mrTuple `json:"mapresult"`
+	}{result}
+	json.NewEncoder(w).Encode(resultStruct)
 }
