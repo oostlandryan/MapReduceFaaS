@@ -61,14 +61,7 @@ func MapHttp(w http.ResponseWriter, r *http.Request) {
 		result = append(result, words...)
 	}
 
-	// // Write results to screen
-	// var strSlice []string
-	// for _, t := range result {
-	// 	s := "(" + t.WordFile + ", " + strconv.Itoa(t.Count) + ")"
-	// 	strSlice = append(strSlice, s)
-	// }
-	// resultStr := strings.Join(strSlice, ", ")
-	// fmt.Fprint(w, "["+resultStr+"")
+	// Return results
 
 	w.Header().Set("Content-Type", "application/json")
 	resultStruct := struct {
