@@ -25,7 +25,7 @@ func MapHttp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// decode response
+	// decode request
 	decoder := json.NewDecoder(r.Body)
 	var f files_struct
 	err := decoder.Decode(&f)
