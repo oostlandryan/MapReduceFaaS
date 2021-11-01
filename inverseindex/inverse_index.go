@@ -1,4 +1,4 @@
-package main
+package inverseindex
 
 import (
 	"bytes"
@@ -11,10 +11,6 @@ import (
 type mrTuple struct {
 	WordFile string `json:"worldfile"`
 	Count    int    `json:"count"`
-}
-
-func main() {
-	inverseIndex([]string{"testfile", "Frankenstein", "PrideandPrejudice"}, 1, 1)
 }
 
 /*
@@ -51,15 +47,18 @@ func inverseIndex(files []string, m int, r int) {
 		}(i)
 	}
 
-	// Collect Results of m map functions
+	/*
+		Collect Results of m map functions
+		NOTE: This acts as the barrier, because result := <-mapChan will wait until there is a value
+		in mapChan that can be assigned to result.
+	*/
 	var mapResult []mrTuple
 	for i := 0; i < m; i++ {
 		result := <-mapChan
 		mapResult = append(mapResult, result...)
 	}
 
-	log.Println(len(mapResult))
-	// Partition mapResult
+	// Sort mapResult
 
 }
 
@@ -94,4 +93,34 @@ func mapCloud(files []string) []mrTuple {
 	json.Unmarshal(body, &output)
 
 	return output.MapResult
+}
+
+func reduceCloud(input []mrTuple) []mrTuple {
+	reduceFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/ReduceHttp"
+
+	j := struct {
+		MapResult []mrTuple `json:"mapresult"`
+	}{input}
+
+	postBody, _ := json.Marshal(j)
+	requestBody := bytes.NewBuffer(postBody)
+
+	resp, err := http.Post(reduceFuncUrl, "application/json", requestBody)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	output := struct {
+		ReduceResult []mrTuple `json:"reduceresult"`
+	}{}
+	json.Unmarshal(body, &output)
+
+	return output.ReduceResult
 }
