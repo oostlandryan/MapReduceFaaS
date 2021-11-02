@@ -17,6 +17,9 @@ func WordCount(fileName string, text string) []mrTuple {
 		w = strings.TrimRightFunc(w, func(r rune) bool {
 			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
 		})
+		w = strings.TrimLeftFunc(w, func(r rune) bool {
+			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+		})
 		tup := mrTuple{
 			WordFile: w + "_" + fileName,
 			Count:    1,

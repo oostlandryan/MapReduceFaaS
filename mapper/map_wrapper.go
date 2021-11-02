@@ -48,7 +48,7 @@ func MapHttp(w http.ResponseWriter, r *http.Request) {
 
 	// Get results of given files
 	var result []mrTuple
-	c := client.Collection("files")
+	c := client.Collection("ryoost-mapreduce")
 	for _, f := range f.Files {
 		d := c.Doc(f)
 		dsnap, err := d.Get(ctx)
