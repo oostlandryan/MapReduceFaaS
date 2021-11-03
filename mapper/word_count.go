@@ -1,8 +1,9 @@
 package mapper
 
 import (
+	"log"
+	"regexp"
 	"strings"
-	"unicode"
 )
 
 type mrTuple struct {
@@ -14,12 +15,12 @@ func WordCount(fileName string, text string) []mrTuple {
 	var result []mrTuple
 	words := strings.Fields(text)
 	for _, w := range words {
-		w = strings.TrimRightFunc(w, func(r rune) bool {
-			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
-		})
-		w = strings.TrimLeftFunc(w, func(r rune) bool {
-			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
-		})
+		reg, err := regexp.Compile("[^a-zA-Z0-9']+")
+		if err != nil {
+			log.Fatal(err)
+		}
+		w := reg.ReplaceAllString(w, "")
+
 		tup := mrTuple{
 			WordFile: w + "_" + fileName,
 			Count:    1,

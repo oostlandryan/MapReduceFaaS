@@ -51,13 +51,14 @@ func CreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 	}
 	defer client.Close()
 	// Store inverse index in Firestore
-	_, err = client.Collection("ryoost-mapreduce").Doc("InverseIndex").Set(ctx, inverseIndex)
-	if err != nil {
-		// Handle any errors in an appropriate way, such as returning them.
-		fmt.Printf("An error has occurred: %s", err)
-		fmt.Fprint(w, "Inverse Index Couldn't be stored")
-	} else {
-		fmt.Fprint(w, "Inverse Index Built")
+	// TODO Change to batch writes
+	for k, v := range inverseIndex {
+		_, err = client.Collection("ryoost-mapreduce").Doc("InverseIndex").Collection("Words").Doc(k).Set(ctx, v)
+		if err != nil {
+			fmt.Printf("An error has occurred: %s", err)
+			fmt.Fprint(w, "Inverse Index Couldn't be stored")
+			return
+		}
 	}
-
+	fmt.Fprint(w, "Inverse Index Built")
 }

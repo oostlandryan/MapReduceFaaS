@@ -26,7 +26,7 @@ type indexTuple struct {
 inverseIndex creates an inverse index of the given files (as long as they're in the firestore)
 using m mappers and r reducers
 */
-func inverseIndex(files []string, m int, r int) map[string][]indexTuple {
+func inverseIndex(files []string, m int, r int) map[string]map[string]int {
 	// if m or r is less than 1, set it to 1
 	if m < 1 {
 		m = 1
@@ -106,14 +106,15 @@ func inverseIndex(files []string, m int, r int) map[string][]indexTuple {
 	rElapsed := time.Since(rStart)
 
 	// Create inverted index from reducer output
-	invertedIndex := make(map[string][]indexTuple)
+	invertedIndex := make(map[string]map[string]int)
 	for _, tup := range reduceResult {
 		s := strings.SplitAfterN(tup.WordFile, "_", 2)
 		s[0] = strings.TrimRight(s[0], "_")
 		if _, ok := invertedIndex[s[0]]; ok {
-			invertedIndex[s[0]] = append(invertedIndex[s[0]], indexTuple{Title: s[1], Count: tup.Count})
+			invertedIndex[s[0]][s[1]] = tup.Count
 		} else {
-			invertedIndex[s[0]] = []indexTuple{{Title: s[1], Count: tup.Count}}
+			invertedIndex[s[0]] = make(map[string]int)
+			invertedIndex[s[0]][s[1]] = tup.Count
 		}
 	}
 	// for k, v := range invertedIndex {
