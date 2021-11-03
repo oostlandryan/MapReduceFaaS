@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -30,7 +31,7 @@ func main() {
 		"The Picture of Dorian Gray",
 		"A Tale of Two Cities",
 		"The Strange Case of Dr. Jekyll And Mr. Hyde",
-		"The Great Gatsby"}, 14, 100)
+		"The Great Gatsby"}, 14, 20)
 }
 
 /*
@@ -115,8 +116,25 @@ func inverseIndex(files []string, m int, r int) {
 		reduceResult = append(reduceResult, result...)
 	}
 	rElapsed := time.Since(rStart)
-	fmt.Println(reduceResult)
-	log.Println(len(reduceResult))
+
+	// Create inverted index from reducer output
+	type indexTuple struct {
+		title string `json:title`
+		count int    `json:title`
+	}
+	invertedIndex := make(map[string][]indexTuple)
+	for _, tup := range reduceResult {
+		s := strings.SplitAfterN(tup.WordFile, "_", 2)
+		s[0] = strings.TrimRight(s[0], "_")
+		if _, ok := invertedIndex[s[0]]; ok {
+			invertedIndex[s[0]] = append(invertedIndex[s[0]], indexTuple{title: s[1], count: tup.Count})
+		} else {
+			invertedIndex[s[0]] = []indexTuple{indexTuple{title: s[1], count: tup.Count}}
+		}
+	}
+	for k, v := range invertedIndex {
+		fmt.Printf("%s : %v\n", k, v)
+	}
 	fmt.Printf("Map Time: %s\n", mElapsed)
 	fmt.Printf("Reduce Time: %s\n", rElapsed)
 
