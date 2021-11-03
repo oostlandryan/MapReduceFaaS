@@ -24,7 +24,10 @@ func WordCount(fileName string, text string) []mrTuple {
 			WordFile: w + "_" + fileName,
 			Count:    1,
 		}
-		result = append(result, tup)
+		if w != "" {
+			result = append(result, tup)
+		}
+
 	}
 	return result
 }

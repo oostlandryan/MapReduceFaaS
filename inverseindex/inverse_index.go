@@ -3,9 +3,13 @@ package inverseindex
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
+	"strings"
+	"time"
 )
 
 type mrTuple struct {
@@ -13,11 +17,16 @@ type mrTuple struct {
 	Count    int    `json:"count"`
 }
 
+type indexTuple struct {
+	Title string `json:"title"`
+	Count int    `json:"count"`
+}
+
 /*
 inverseIndex creates an inverse index of the given files (as long as they're in the firestore)
 using m mappers and r reducers
 */
-func inverseIndex(files []string, m int, r int) {
+func inverseIndex(files []string, m int, r int) map[string][]indexTuple {
 	// if m or r is less than 1, set it to 1
 	if m < 1 {
 		m = 1
@@ -33,12 +42,11 @@ func inverseIndex(files []string, m int, r int) {
 
 	// Partition files into m slices
 	fSlices := make([][]string, m)
-	chunkSize := int(len(files) / m)
-	for i := 0; i < m-1; i++ {
-		fSlices[i] = files[i*chunkSize : (i+1)*chunkSize]
+	for i, f := range files {
+		i = i % m
+		fSlices[i] = append(fSlices[i], f)
 	}
-	fSlices[m-1] = files[(m-1)*chunkSize:]
-
+	mStart := time.Now()
 	// Concurrently run m map functions
 	mapChan := make(chan []mrTuple)
 	for i := 0; i < m; i++ {
@@ -57,9 +65,64 @@ func inverseIndex(files []string, m int, r int) {
 		result := <-mapChan
 		mapResult = append(mapResult, result...)
 	}
-
+	mElapsed := time.Since(mStart)
 	// Sort mapResult
+	sort.Slice(mapResult, func(i, j int) bool {
+		return mapResult[i].WordFile < mapResult[j].WordFile
+	})
 
+	// Find indexes where wordfile changes
+	indexes := []int{}
+	prev := mapResult[0].WordFile
+	for i := 1; i < len(mapResult); i++ {
+		if mapResult[i].WordFile != prev {
+			indexes = append(indexes, i)
+			prev = mapResult[i].WordFile
+		}
+	}
+
+	// Partition mapResult to r reducers
+	rSlices := make([][]mrTuple, r)
+	rSlices[0] = mapResult[:indexes[0]]
+	for i := 1; i < len(indexes); i++ {
+		reducer := i % r
+		rSlices[reducer] = append(rSlices[reducer], mapResult[indexes[i-1]:indexes[i]]...)
+	}
+	rStart := time.Now()
+	// Concurrently run r reduce functions
+	reduceChan := make(chan []mrTuple)
+	for i := 0; i < r; i++ {
+		go func(s int) {
+			reduceChan <- reduceCloud(rSlices[s])
+		}(i)
+	}
+
+	// Collect results of r reduce functions
+	var reduceResult []mrTuple
+	for i := 0; i < r; i++ {
+		result := <-reduceChan
+		reduceResult = append(reduceResult, result...)
+	}
+	rElapsed := time.Since(rStart)
+
+	// Create inverted index from reducer output
+	invertedIndex := make(map[string][]indexTuple)
+	for _, tup := range reduceResult {
+		s := strings.SplitAfterN(tup.WordFile, "_", 2)
+		s[0] = strings.TrimRight(s[0], "_")
+		if _, ok := invertedIndex[s[0]]; ok {
+			invertedIndex[s[0]] = append(invertedIndex[s[0]], indexTuple{Title: s[1], Count: tup.Count})
+		} else {
+			invertedIndex[s[0]] = []indexTuple{{Title: s[1], Count: tup.Count}}
+		}
+	}
+	// for k, v := range invertedIndex {
+	// 	fmt.Printf("%s : %v\n", k, v)
+	// }
+	fmt.Printf("Map Time: %s\n", mElapsed)
+	fmt.Printf("Reduce Time: %s\n", rElapsed)
+
+	return invertedIndex
 }
 
 /*
