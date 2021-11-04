@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 )
 
@@ -37,28 +39,37 @@ func CreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 	// Create inverse index
 	inverseIndex := inverseIndex(cir.Files, cir.Mappers, cir.Reducers)
 
-	// Connect to Firebase
+	// Connect to Firestore
 	ctx := context.Background()
 	conf := &firebase.Config{ProjectID: projectID}
 	app, err := firebase.NewApp(ctx, conf)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	client, err := app.Firestore(ctx)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer client.Close()
-	// Store inverse index in Firestore
-	// TODO Change to batch writes
+
+	// Store inverse index in Firestore, 500 words at a time
+	count := 0
+	var batch *firestore.WriteBatch
 	for k, v := range inverseIndex {
-		_, err = client.Collection("ryoost-mapreduce").Doc("InverseIndex").Collection("Words").Doc(k).Set(ctx, v)
-		if err != nil {
-			fmt.Printf("An error has occurred: %s", err)
-			fmt.Fprint(w, "Inverse Index Couldn't be stored")
-			return
+		if count%500 == 0 {
+			batch = client.Batch()
 		}
+		docRef := client.Collection("ryoost-mapreduce").Doc("InverseIndex").Collection("Words").Doc(k)
+		batch.Set(docRef, v)
+		if count%500 == 499 {
+			_, err := batch.Commit(ctx)
+			if err != nil {
+				log.Printf("Error on batch write: %s", err)
+				fmt.Fprint(w, "Inverse Index not stored")
+				os.Exit(1)
+			}
+		}
+		count++
 	}
 	fmt.Fprint(w, "Inverse Index Built")
 }
