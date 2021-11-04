@@ -13,7 +13,6 @@ import (
 var bookURLs = map[string]string{
 	"Frankenstein":                                "https://www.gutenberg.org/files/84/84-0.txt",
 	"Pride and Prejudice":                         "https://www.gutenberg.org/files/1342/1342-0.txt",
-	"The Game of Go":                              "https://www.gutenberg.org/cache/epub/66632/pg66632.txt",
 	"The Legend of Sleepy Hollow":                 "https://www.gutenberg.org/files/41/41-0.txt",
 	"Alice's Adventures in Wonderland":            "https://www.gutenberg.org/files/11/11-0.txt",
 	"Dracula":                                     "https://www.gutenberg.org/files/345/345-0.txt",
@@ -25,6 +24,18 @@ var bookURLs = map[string]string{
 	"A Tale of Two Cities":                        "https://www.gutenberg.org/files/98/98-0.txt",
 	"The Strange Case of Dr. Jekyll And Mr. Hyde": "https://www.gutenberg.org/files/43/43-0.txt",
 	"The Great Gatsby":                            "https://www.gutenberg.org/cache/epub/64317/pg64317.txt",
+	"A Doll's House":                              "https://www.gutenberg.org/files/2542/2542-0.txt",
+	"A Modest Proposal":                           "https://www.gutenberg.org/files/1080/1080-0.txt",
+	"Metamorphosis":                               "https://www.gutenberg.org/files/5200/5200-0.txt",
+	"The Prince":                                  "https://www.gutenberg.org/files/1232/1232-0.txt",
+	"Heart of Darkness":                           "https://www.gutenberg.org/files/219/219-0.txt",
+	"The Odyssey":                                 "https://www.gutenberg.org/cache/epub/1727/pg1727.txt",
+	"Grimms' Fairy Tales":                         "https://www.gutenberg.org/files/2591/2591-0.txt",
+	"Beowulf":                                     "https://www.gutenberg.org/files/16328/16328-0.txt",
+	"The Adventures of Tom Sawyer":                "https://www.gutenberg.org/files/74/74-0.txt",
+	"Emma":                                        "https://www.gutenberg.org/files/158/158-0.txt",
+	"The Communist Manifesto":                     "https://www.gutenberg.org/cache/epub/61/pg61.txt",
+	"Anthem":                                      "https://www.gutenberg.org/files/1250/1250-0.txt",
 }
 
 const projectID string = "cloud-computing-327315"

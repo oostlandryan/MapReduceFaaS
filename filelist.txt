@@ -1,0 +1,3 @@
+{"Files": ["Frankenstein","Pride and Prejudice","The Legend of Sleepy Hollow","Alice's Adventures in Wonderland","Dracula","The Scarlet Letter","A Christmas Carol","The Adventures of Sherlock Holmes","The Yellow Wallpaper","The Picture of Dorian Gray","A Tale of Two Cities","The Strange Case of Dr. Jekyll And Mr. Hyde","The Great Gatsby","A Doll's House","A Modest Proposal","Metamorphosis","The Prince","Heart of Darkness","The Odyssey","Grimms' Fairy Tales","Beowulf","The Adventures of Tom Sawyer","Emma","The Communist Manifesto","Anthem"],
+"Mappers": 25,
+"Reducers": 40}

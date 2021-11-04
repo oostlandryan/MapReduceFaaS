@@ -130,7 +130,7 @@ func inverseIndex(files []string, m int, r int) map[string]map[string]int {
 mapCloud
 */
 func mapCloud(files []string) []mrTuple {
-	mapFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/MapHttp"
+	mapFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostMapHttp"
 
 	j := struct {
 		Files []string `json:"Files"`
@@ -160,7 +160,7 @@ func mapCloud(files []string) []mrTuple {
 }
 
 func reduceCloud(input []mrTuple) []mrTuple {
-	reduceFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/ReduceHttp"
+	reduceFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostReduceHttp"
 
 	j := struct {
 		MapResult []mrTuple `json:"mapresult"`

@@ -20,7 +20,7 @@ type CreateIndexRequest struct {
 	Reducers int
 }
 
-func CreateIndexHttp(w http.ResponseWriter, r *http.Request) {
+func RyoostCreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 	// ensure it's a post request
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -61,7 +61,7 @@ func CreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 		}
 		docRef := client.Collection("ryoost-mapreduce").Doc("InverseIndex").Collection("Words").Doc(k)
 		batch.Set(docRef, v)
-		if count%500 == 499 {
+		if count%500 == 499 || count == len(inverseIndex)-1 {
 			_, err := batch.Commit(ctx)
 			if err != nil {
 				log.Printf("Error on batch write: %s", err)

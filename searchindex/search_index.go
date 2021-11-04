@@ -1,8 +1,7 @@
-package main
+package searchindex
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	firebase "firebase.google.com/go"
@@ -11,11 +10,6 @@ import (
 )
 
 const projectID string = "cloud-computing-327315"
-
-func main() {
-	result := SearchIndex("the")
-	fmt.Println(result)
-}
 
 // Search index returns the map of books to counts for the given word
 func SearchIndex(word string) map[string]int {

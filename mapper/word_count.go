@@ -4,6 +4,7 @@ import (
 	"log"
 	"regexp"
 	"strings"
+	"unicode"
 )
 
 type mrTuple struct {
@@ -19,16 +20,18 @@ func WordCount(fileName string, text string) []mrTuple {
 		if err != nil {
 			log.Fatal(err)
 		}
-		w := reg.ReplaceAllString(w, "")
-
-		tup := mrTuple{
-			WordFile: w + "_" + fileName,
-			Count:    1,
+		w := reg.ReplaceAllString(w, " ")
+		ws := strings.Split(w, " ")
+		for _, v := range ws {
+			v = strings.TrimFunc(v, func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsNumber(r) })
+			tup := mrTuple{
+				WordFile: v + "_" + fileName,
+				Count:    1,
+			}
+			if v != "" {
+				result = append(result, tup)
+			}
 		}
-		if w != "" {
-			result = append(result, tup)
-		}
-
 	}
 	return result
 }

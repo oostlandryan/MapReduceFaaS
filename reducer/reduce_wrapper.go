@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func ReduceHttp(w http.ResponseWriter, r *http.Request) {
+func RyoostReduceHttp(w http.ResponseWriter, r *http.Request) {
 	// ensure it's a post request
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)

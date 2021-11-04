@@ -17,7 +17,7 @@ type files_struct struct {
 }
 
 // Google Cloud Function to call the map function on
-func MapHttp(w http.ResponseWriter, r *http.Request) {
+func RyoostMapHttp(w http.ResponseWriter, r *http.Request) {
 	// ensure it's a post request
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
