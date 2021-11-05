@@ -5,4 +5,4 @@ Implements MapReduce using FaaS [assignment](https://cgi.luddy.indiana.edu/~prat
 [Your First Function: Go](https://cloud.google.com/functions/docs/first-go)
 
 ### Gcloud Usage
-gcloud functions deploy \[function-name\] --runtime go113 --trigger-http --allow-unauthenticated --timeout 30-0 --memory 512
+gcloud functions deploy \[function-name\] --runtime go113 --trigger-http --allow-unauthenticated --timeout 300 --memory 1024

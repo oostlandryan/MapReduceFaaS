@@ -63,7 +63,7 @@ Output:
 }
 ```
 ## RyoostCreateIndexHttp
-Creates the inverted index, storing it in Firestore.  
+Creates the inverted index, storing it in Firestore. Loading the inverted index of my 25 book corpus to Firestore took 37,718 writes.  
 Input:  
 ```json
 {

@@ -65,11 +65,19 @@ func RyoostCreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 			_, err := batch.Commit(ctx)
 			if err != nil {
 				log.Printf("Error on batch write: %s", err)
-				fmt.Fprint(w, "Inverted Index not stored")
+				resultStruct := struct {
+					Status string `json:"status"`
+				}{"false"}
+				json.NewEncoder(w).Encode(resultStruct)
 				os.Exit(1)
 			}
 		}
 		count++
 	}
-	fmt.Fprint(w, "Inverted Index Built")
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	resultStruct := struct {
+		Status string `json:"status"`
+	}{"true"}
+	json.NewEncoder(w).Encode(resultStruct)
 }

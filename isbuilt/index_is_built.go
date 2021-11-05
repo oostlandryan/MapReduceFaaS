@@ -1,18 +1,26 @@
-package main
+package isbuilt
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"strconv"
 
 	firebase "firebase.google.com/go"
 )
 
 const projectID string = "cloud-computing-327315"
 
-func main() {
-	result := is_index_built()
-	fmt.Println(result)
+func IndexBuiltHttp(w http.ResponseWriter, r *http.Request) {
+	status := is_index_built()
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	resultStruct := struct {
+		Status string `json:"status"`
+	}{strconv.FormatBool(status)}
+	json.NewEncoder(w).Encode(resultStruct)
 }
 
 func is_index_built() bool {
