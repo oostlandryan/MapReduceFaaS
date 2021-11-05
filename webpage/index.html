@@ -1,4 +1,9 @@
-<title>Inverted Index Search</title>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inverted Index Search</title>
+    <script></script>
+</head>
 
 <body>
     <div align="center">
@@ -7,7 +12,12 @@
             <input type="text" name="Term" id="Term"/>
             <button type="submit">Search</button>
         </form>
-        <div id='searchresults'></div>
+        <div id='resultsdiv'>
+        </div>
+        <table id="resultstable">
+        </table>
+        
+        
     </div>
 
     <script>
@@ -30,13 +40,27 @@
                 return response.json()
             }).then(function (data) {
                 console.log(data)
-                var div = document.getElementById('searchresults');
+                var table = document.getElementById('resultstable');
+                var div = document.getElementById('resultsdiv')
                 while (div.firstChild) {
-                    div.removeChild(div.firstChild)
+                    div.removeChild(div.firstChild);
                 }
-                data.results.forEach(function (obj) {
-                    div.innerHTML += `<p>${obj.title} - ${obj.count}</p>`
-                });
+                while (table.firstChild) {
+                    table.removeChild(table.firstChild);
+                }
+                if (data.results == null) {
+                    div.innerHTML = '<p>No results found</p>'
+                }
+                else {
+                    data.results.forEach(function (obj) {
+                    var r = table.insertRow(-1);
+                    var t = r.insertCell(0);
+                    var c = r.insertCell(1);
+
+                    t.innerHTML = obj.title;
+                    c.innerHTML = obj.count;
+                    });
+                }
             }).catch(function (error) {
                 console.log(error)
             });
@@ -44,3 +68,4 @@
 
     </script>
 </body>
+</html>
