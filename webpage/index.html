@@ -1,0 +1,46 @@
+<title>Inverted Index Search</title>
+
+<body>
+    <div align="center">
+        <h1>Search for Word</h1>
+        <form id="searchForm">
+            <input type="text" name="Term" id="Term"/>
+            <button type="submit">Search</button>
+        </form>
+        <div id='searchresults'></div>
+    </div>
+
+    <script>
+        const searchForm = document.getElementById("searchForm")
+
+        searchForm.addEventListener('submit', function (e){
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            var object = {};
+            formData.forEach(function(v, k){
+                object[k] = v;
+            });
+            var json = JSON.stringify(object)
+            fetch('https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostSearchHttp', {
+                method: 'post',
+                body: json
+            }).then(function (response) {
+                console.log(response);
+                return response.json()
+            }).then(function (data) {
+                console.log(data)
+                var div = document.getElementById('searchresults');
+                while (div.firstChild) {
+                    div.removeChild(div.firstChild)
+                }
+                data.results.forEach(function (obj) {
+                    div.innerHTML += `<p>${obj.title} - ${obj.count}</p>`
+                });
+            }).catch(function (error) {
+                console.log(error)
+            });
+        });
+
+    </script>
+</body>

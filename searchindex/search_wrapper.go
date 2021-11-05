@@ -43,6 +43,7 @@ func RyoostSearchHttp(w http.ResponseWriter, r *http.Request) {
 		return sortedResults[i].Count > sortedResults[j].Count
 	})
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	resultStruct := struct {
 		Results []tcTuple `json:"results"`
 	}{sortedResults}

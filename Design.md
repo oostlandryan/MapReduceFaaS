@@ -2,13 +2,13 @@
 ## RyoostMapHttp
 Performs the map operation on the given files  
 Input:  
-```
+```json
 {
 "Files" : ["filename1", "filename2", ...]
 }
 ```
-Output:  
-```
+Output: `Inverted Index Built` or `Inverted Index Not Stored` depending on if the entire inverted index was uploaded to Firestore or not.
+```json
 {
     "mapresult" : [
         {
@@ -29,7 +29,7 @@ Output:
 ## RyoostReduceHttp
 Performs the reduce operation on the given key, value tuples  
 Input:  
-```
+```json
 {
     "mapresult" : [
         {
@@ -48,7 +48,7 @@ Input:
 }
 ```
 Output:  
-```
+```json
 {
     "reduceresult" : [
         {
@@ -58,26 +58,32 @@ Output:
         {
             "wordfile" : "word2_filename1"
             "count" : 1
-        },
-        {
-            "wordfile" : "word3_filename2"
-            "count" : 3
         }, ...
     ]
 }
 ```
 ## RyoostCreateIndexHttp
-Creates the inverted index, storing it in Firestore.
+Creates the inverted index, storing it in Firestore.  
+Input:  
+```json
+{
+    "Files": ["filename1", "filename2", ...]
+    "Mappers": <number of desired map processes>
+    "Reducers": <number of desired reduce processes>
+}
+```
+Output:  
+
 ## RyoostSearchHttp
 Searches the inverted index for the given search term  
 Input:  
-```
+```json
 {
     "Term" : "<search term>"
 }
 ```
 Output:  
-```
+```json
 {
     "results" : [
         {
@@ -91,3 +97,9 @@ Output:
     ]
 }
 ```
+# Implementation Details
+## Corpus
+## Map
+## Reduce
+## Barrier
+## Storage

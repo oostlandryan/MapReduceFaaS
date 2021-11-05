@@ -12,6 +12,9 @@ import (
 	"time"
 )
 
+const reduceFuncUrl string = "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostReduceHttp"
+const mapFuncUrl string = "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostMapHttp"
+
 type mrTuple struct {
 	WordFile string `json:"worldfile"`
 	Count    int    `json:"count"`
@@ -130,8 +133,6 @@ func inverseIndex(files []string, m int, r int) map[string]map[string]int {
 mapCloud
 */
 func mapCloud(files []string) []mrTuple {
-	mapFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostMapHttp"
-
 	j := struct {
 		Files []string `json:"Files"`
 	}{files}
@@ -160,8 +161,6 @@ func mapCloud(files []string) []mrTuple {
 }
 
 func reduceCloud(input []mrTuple) []mrTuple {
-	reduceFuncUrl := "https://us-central1-cloud-computing-327315.cloudfunctions.net/RyoostReduceHttp"
-
 	j := struct {
 		MapResult []mrTuple `json:"mapresult"`
 	}{input}

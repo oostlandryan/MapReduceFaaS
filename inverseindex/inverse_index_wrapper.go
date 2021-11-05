@@ -65,11 +65,11 @@ func RyoostCreateIndexHttp(w http.ResponseWriter, r *http.Request) {
 			_, err := batch.Commit(ctx)
 			if err != nil {
 				log.Printf("Error on batch write: %s", err)
-				fmt.Fprint(w, "Inverse Index not stored")
+				fmt.Fprint(w, "Inverted Index not stored")
 				os.Exit(1)
 			}
 		}
 		count++
 	}
-	fmt.Fprint(w, "Inverse Index Built")
+	fmt.Fprint(w, "Inverted Index Built")
 }
