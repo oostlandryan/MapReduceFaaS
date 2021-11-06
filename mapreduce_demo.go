@@ -26,8 +26,9 @@ func main() {
 
 	if index {
 		fmt.Println(createIndexCloud(m, r))
-	}
 
+	}
+	fmt.Println(word, ":")
 	fmt.Println(searchCloud(word))
 }
 

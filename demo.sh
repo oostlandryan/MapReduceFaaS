@@ -2,3 +2,4 @@
 
 go mod download
 go run mapreduce_demo.go -word=you -m=25 -r=30 -createindex=true
+go run mapreduce_demo.go -word=that -createindex=false
